@@ -428,7 +428,7 @@ function createGhostSilhouette(nodes) {
 }
 
 function loadUnifiedModel() {
-    const modelUrl = 'https://github.com/Kpvs123/ByteForge/releases/download/v1.0.0/allparts.glb';
+    const modelUrl = 'https://huggingface.co/datasets/Kpvs123/byteforge-models/resolve/main/allparts.glb';
 
     const onLoaded = (gltf) => {
         allpartsScene = gltf.scene;
