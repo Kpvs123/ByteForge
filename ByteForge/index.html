@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Builder 3D - Simulador Interactivo de Ensamblaje</title>
+    <!-- Fuentes Técnicas Sci-Fi / HUD -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <!-- Pantalla de Inicio ByteForge Welcome Screen (Landing Hub) -->
+    <div id="byteforge-welcome-screen" class="byteforge-overlay">
+        <div class="byteforge-card">
+            <div class="byteforge-logo-wrapper">
+                <span class="byteforge-hex">⬢</span>
+            </div>
+            <h1 class="byteforge-title">BYTEFORGE</h1>
+            <p class="byteforge-subtitle">Simulador Interactivo de Ensamblaje de PC</p>
+            <div class="byteforge-tagline">
+                <span>SYS // 3D_WORKSTATION</span> • <span>CENTRO DE ENSAMBLE & HARDWARE</span>
+            </div>
+            
+            <!-- 2 Opciones Principales del Hub -->
+            <div class="byteforge-menu-grid">
+                <button id="btn-start-simulator" class="hub-action-card primary-action">
+                    <div class="hub-card-glow"></div>
+                    <div class="hub-card-icon">⚡</div>
+                    <div class="hub-card-content">
+                        <span class="hub-card-title">INICIAR SIMULADOR 3D</span>
+                        <span class="hub-card-desc">Selecciona tus componentes e ingresa al simulador paso a paso</span>
+                    </div>
+                    <div class="hub-card-arrow">▶</div>
+                </button>
+
+                <button id="btn-open-about" class="hub-action-card">
+                    <div class="hub-card-glow"></div>
+                    <div class="hub-card-icon">👥</div>
+                    <div class="hub-card-content">
+                        <span class="hub-card-title">CONÓCENOS</span>
+                        <span class="hub-card-desc">Proyecto de Grado • Institución Educativa Federico Ángel</span>
+                    </div>
+                    <div class="hub-card-arrow">▶</div>
+                </button>
+            </div>
+
+            <div class="byteforge-features">
+                <div class="feat-item"><span class="feat-icon">⚡</span> Componentes Reales 3D</div>
+                <div class="feat-item"><span class="feat-icon">🎯</span> Guía Paso a Paso</div>
+                <div class="feat-item"><span class="feat-icon">🔍</span> Visor 360° Detallado</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HUD Header Superior con Branding Tech y Theme Toggle -->
+    <header id="hud-topbar" class="hud-topbar">
+        <div class="hud-brand">
+            <span class="hud-hex-icon">⬢</span>
+            <div class="hud-brand-text">
+                <span class="hud-brand-title">CYBER_LAB // RIG_BUILDER</span>
+                <span class="hud-brand-sub">SYS_VER 3.5 • WORKSTATION 3D</span>
+            </div>
+        </div>
+        
+        <div class="hud-topbar-controls">
+            <button id="btn-return-main-menu" class="hud-menu-btn" title="Volver a la Pantalla de Inicio">
+                <span class="hud-menu-icon">◀</span>
+                <span class="hud-menu-text">MENÚ PRINCIPAL</span>
+            </button>
+            <button id="theme-toggle-btn" class="hud-toggle-btn" title="Alternar Modo Claro / Modo Oscuro">
+                <span id="theme-toggle-icon" class="hud-toggle-icon">🌙</span>
+                <span id="theme-toggle-text" class="hud-toggle-label">MODO OSCURO</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Panel Lateral Izquierdo: Secuencia de Ensamblaje HUD -->
+    <div id="left-panel" class="ui-panel hud-panel">
+        <div id="progress-container" class="hud-progress-block">
+            <div class="hud-progress-header">
+                <span class="hud-tag">// SECUENCIA_SYS</span>
+                <span class="hud-progress-counter">[ <span id="progress-text">0/6</span> ]</span>
+            </div>
+            
+            <!-- Barra Segmentada Estilo HUD Militar [|||||.....] -->
+            <div class="hud-segmented-bar" id="hud-segments">
+                <div class="hud-seg active" data-step="0"><span class="seg-fill"></span></div>
+                <div class="hud-seg" data-step="1"><span class="seg-fill"></span></div>
+                <div class="hud-seg" data-step="2"><span class="seg-fill"></span></div>
+                <div class="hud-seg" data-step="3"><span class="seg-fill"></span></div>
+                <div class="hud-seg" data-step="4"><span class="seg-fill"></span></div>
+                <div class="hud-seg" data-step="5"><span class="seg-fill"></span></div>
+            </div>
+            
+            <div class="progress-bar"><div id="progress-fill"></div></div>
+            <div class="base-badge"><span class="badge-dot">●</span> NÚCLEO BASE: CHASIS & MOTHERBOARD</div>
+        </div>
+        
+        <h3 class="hud-panel-title">// MÓDULOS DE ENSAMBLAJE</h3>
+        <ul id="step-list" class="hud-step-list">
+            <li data-id="cpu" class="active">
+                <span class="step-num">01</span>
+                <span class="step-name">CPU (Procesador)</span>
+                <span class="step-status-icon">▶</span>
+            </li>
+            <li data-id="ram">
+                <span class="step-num">02</span>
+                <span class="step-name">Memoria RAM</span>
+                <span class="step-status-icon">○</span>
+            </li>
+            <li data-id="cooler">
+                <span class="step-num">03</span>
+                <span class="step-name">Disipador / Cooler</span>
+                <span class="step-status-icon">○</span>
+            </li>
+            <li data-id="gpu">
+                <span class="step-num">04</span>
+                <span class="step-name">Tarjeta Gráfica (GPU)</span>
+                <span class="step-status-icon">○</span>
+            </li>
+            <li data-id="psu">
+                <span class="step-num">05</span>
+                <span class="step-name">Fuente de Poder (PSU)</span>
+                <span class="step-status-icon">○</span>
+            </li>
+            <li data-id="storage">
+                <span class="step-num">06</span>
+                <span class="step-name">Almacenamiento (SSD)</span>
+                <span class="step-status-icon">○</span>
+            </li>
+        </ul>
+        
+        <div class="nav-buttons">
+            <button id="btn-prev" disabled>◀ ANTERIOR</button>
+            <button id="btn-next">SIGUIENTE ▶</button>
+        </div>
+    </div>
+
+    <!-- Panel Lateral Derecho: Inventario y Montaje Educativo HUD -->
+    <div id="info-panel" class="ui-panel hud-panel">
+        <div class="panel-header hud-panel-header">
+            <span class="step-badge hud-badge" id="step-badge">Paso 1 de 6</span>
+            <h2 id="component-title">CPU (Procesador)</h2>
+        </div>
+        
+        <p id="component-description" class="hud-desc">Cargando detalles...</p>
+        
+        <!-- Tarjeta de Información Educativa Tech -->
+        <div id="educational-card" class="educational-card hud-card-inset">
+            <h4>💡 Guía Técnica de Instalación</h4>
+            <p id="educational-text">Alinea el triángulo indicador del CPU con el socket AM4 y baja la palanca metálica de fijación sin forzar.</p>
+        </div>
+        
+        <div id="component-status" class="status-pending hud-status-badge">
+            <span class="status-dot">●</span>
+            <span class="status-text">Estado: Listo para montar</span>
+        </div>
+        
+        <!-- Controles de Acción -->
+        <div id="action-container" class="action-grid">
+            <div class="secondary-actions">
+                <button id="btn-inspect" class="secondary-btn hud-btn-sub" title="Alternar enfoque hacia la pieza o hacia la ranura">🔍 Ver Pieza</button>
+                <button id="btn-edu" class="secondary-btn hud-btn-sub" title="Mostrar/Ocultar consejos técnicos">💡 Info Educativa</button>
+            </div>
+            <button id="install-btn" class="action-btn hud-btn-primary">⚡ Hacer Clic para Encajar</button>
+        </div>
+
+        <button id="btn-reset-cam" class="view-all-btn hud-btn-ghost">🌐 Vista General del Chasis</button>
+    </div>
+
+    <!-- Modal Flotante de Inspección de Componente Tech HUD -->
+    <div id="inspect-modal" class="modal-overlay hidden">
+        <div class="modal-card hud-modal-card">
+            <button id="modal-close-btn" class="modal-close hud-close" title="Cerrar ventana">&times;</button>
+            
+            <div class="modal-header hud-modal-header">
+                <span id="modal-category" class="modal-category-badge hud-badge">Hardware</span>
+                <h2 id="modal-title">Nombre del Componente</h2>
+            </div>
+            
+            <div class="modal-body-layout">
+                <!-- Columna Izquierda: Visor 3D Interactivo Secundario -->
+                <div class="modal-col-viewer">
+                    <div id="component-viewer-3d" class="viewer-3d-container">
+                        <!-- Canvas 3D de la mini-escena se inyecta dinámicamente aquí -->
+                        <div class="viewer-3d-overlay">
+                            <span class="viewer-badge">3D Interactivo</span>
+                            <span class="viewer-hint">🔄 Arrastra para girar 360° • Rueda para zoom</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Especificaciones Técnicas y Datos -->
+                <div class="modal-col-details">
+                    <!-- Tarjeta Visual de Resumen -->
+                    <div class="modal-visual-card">
+                        <div id="modal-visual-icon" class="modal-icon">⚙️</div>
+                        <div class="modal-visual-info">
+                            <span id="modal-highlight" class="modal-highlight-tag">Característica Destacada</span>
+                            <p id="modal-short-desc">Descripción rápida del componente.</p>
+                        </div>
+                    </div>
+
+                    <!-- Grilla de Especificaciones Técnicas -->
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <span class="spec-label">💵 Precio Estimado:</span>
+                            <span id="modal-price" class="spec-value">$0 USD</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">⚡ Consumo (TDP):</span>
+                            <span id="modal-tdp" class="spec-value">0W</span>
+                        </div>
+                        <div class="spec-item spec-full">
+                            <span class="spec-label">🧩 Compatibilidad:</span>
+                            <span id="modal-compat" class="spec-value">Compatibilidad</span>
+                        </div>
+                    </div>
+
+                    <!-- Descripción Educativa Detallada -->
+                    <div class="modal-edu-box">
+                        <h4>📘 Función en el Sistema</h4>
+                        <p id="modal-full-desc">Detalles del componente en el sistema de cómputo.</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button id="modal-fit-btn" class="modal-action-btn">⚡ Instalar / Encajar Esta Pieza</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Conócenos / Información del Proyecto de Grado -->
+    <div id="about-project-modal" class="modal-overlay hidden">
+        <div class="modal-card hud-modal-card about-modal-card">
+            <button id="about-modal-close-btn" class="modal-close hud-close" title="Cerrar">&times;</button>
+            
+            <div class="about-header">
+                <span class="hud-badge">PROYECTO DE GRADO // SYS_DOC</span>
+                <h2 class="about-title">Proyecto ByteForge // Simulación Educativa de Ensamble de Hardware</h2>
+                <h3 class="about-subtitle">Trabajo de Grado - Institución Educativa Federico Ángel</h3>
+            </div>
+
+            <div class="about-body">
+                <!-- Descripción Principal -->
+                <div class="about-section">
+                    <h4 class="about-section-title"><span class="section-icon">📘</span> DESCRIPCIÓN</h4>
+                    <p class="about-desc">
+                        ByteForge es un simulador web 3D interactivo desarrollado como proyecto de grado, diseñado para enseñar de forma práctica, intuitiva y rigurosa la selección de componentes de hardware, verificación de compatibilidad en tiempo real y el proceso de montaje físico de computadoras personalizadas.
+                    </p>
+                </div>
+
+                <!-- Desarrolladores -->
+                <div class="about-section">
+                    <h4 class="about-section-title"><span class="section-icon">👨‍💻</span> DESARROLLADORES</h4>
+                    <div class="developers-list">
+                        <div class="dev-item">
+                            <span class="dev-bullet">⚡</span>
+                            <div class="dev-info">
+                                <span class="dev-name">Kevin Puerta Vanegas</span>
+                                <span class="dev-role">Desarrollo de software y logica</span>
+                            </div>
+                        </div>
+                        <div class="dev-item">
+                            <span class="dev-bullet">⚡</span>
+                            <div class="dev-info">
+                                <span class="dev-name">Emmanuel Arenas Quiroz</span>
+                                <span class="dev-role">Modelado 3d</span>
+                            </div>
+                        </div>
+                        <div class="dev-item">
+                            <span class="dev-bullet">⚡</span>
+                            <div class="dev-info">
+                                <span class="dev-name">Emmanuel Perez Correa</span>
+                                <span class="dev-role">Experiencia e interfaz de usuario</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de Contacto -->
+                <div class="about-section about-contact-section">
+                    <h4 class="about-section-title"><span class="section-icon">✉️</span> SECCIÓN DE CONTACTO</h4>
+                    <form id="about-contact-form" class="about-contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contact-name">Tu Nombre</label>
+                                <input type="text" id="contact-name" class="tech-form-input" placeholder="Ingresa tu nombre completo" required autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-email">Tu Correo Electrónico</label>
+                                <input type="email" id="contact-email" class="tech-form-input" placeholder="nombre@correo.com" required autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-message">Mensaje o Consulta</label>
+                            <textarea id="contact-message" class="tech-form-textarea" rows="3" placeholder="Escribe tu mensaje o consulta..." required></textarea>
+                        </div>
+                        <div class="form-footer">
+                            <button type="submit" id="btn-send-contact" class="action-btn clean-continue-btn contact-submit-btn">
+                                <span>ENVIAR MENSAJE</span>
+                                <span>▶</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Inspección / Finalización de Ensamble (100% Completado) -->
+    <div id="assembly-completion-modal" class="modal-overlay hidden">
+        <div class="modal-card hud-modal-card completion-modal-card">
+            <button id="completion-modal-close-btn" class="modal-close hud-close" title="Cerrar">&times;</button>
+            
+            <div class="completion-header">
+                <div class="completion-badge-wrap">
+                    <span class="hud-badge">SPECS DOCK // INFORME DE ENSAMBLE</span>
+                    <span class="completion-verified-tag">
+                        <span class="status-dot">●</span> Sistema 100% Funcional y Verificado ✓
+                    </span>
+                </div>
+                <h2 class="completion-title">¡EQUIPO ENSAMBLADO CON ÉXITO! 🚀</h2>
+                <p class="completion-subtitle">La estación de trabajo ha superado el ciclo de montaje paso a paso y la comprobación de POST.</p>
+            </div>
+
+            <!-- Métrica Global Destacada -->
+            <div class="completion-metrics-bar">
+                <div class="completion-metric-card">
+                    <span class="metric-label">PRECIO TOTAL FINAL</span>
+                    <span id="completion-total-price" class="metric-val text-cyan">$0 USD</span>
+                </div>
+                <div class="metric-divider"></div>
+                <div class="completion-metric-card">
+                    <span class="metric-label">CONSUMO TOTAL (TDP)</span>
+                    <span id="completion-total-tdp" class="metric-val">0W (TDP)</span>
+                </div>
+                <div class="metric-divider"></div>
+                <div class="completion-metric-card">
+                    <span class="metric-label">VERIFICACIÓN GLOBAL</span>
+                    <span class="completion-diag-ok">SISTEMA LISTO PARA BOOT</span>
+                </div>
+            </div>
+
+            <!-- Desglose Completo de los 7 Componentes Instalados -->
+            <div class="completion-specs-section">
+                <div class="completion-section-header">
+                    <span class="hud-tag">// DESGLOSE DE HARDWARE EQUIPADO (7 COMPONENTES)</span>
+                    <span class="completion-count-label">Configuración Activa</span>
+                </div>
+                <div class="completion-specs-grid" id="completion-specs-grid">
+                    <!-- Inyectado dinámicamente con las 7 tarjetas de componentes -->
+                </div>
+            </div>
+
+            <!-- Botones de Acción Final -->
+            <div class="completion-actions-bar">
+                <button id="btn-completion-restart" class="hud-btn-sub completion-restart-btn">
+                    <span>🔄</span> REINICIAR SIMULACIÓN
+                </button>
+                <button id="btn-completion-main-menu" class="action-btn clean-continue-btn completion-menu-btn">
+                    <span>◀</span> VOLVER AL MENÚ PRINCIPAL
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal / Pantalla de Selección de Componentes Pre-Ensamblaje -->
+    <div id="component-select-modal" class="modal-overlay hidden">
+        <div class="modal-card hud-modal-card pre-assembly-card">
+            <!-- Header con Título y Botón Volver al Menú Principal -->
+            <div class="pre-assembly-header">
+                <div class="pre-assembly-title-block">
+                    <span class="hud-badge">CONFIGURACIÓN PREVIA // WORKSTATION RIG</span>
+                    <h2>⚙️ SELECCIÓN DE COMPONENTES</h2>
+                    <p class="pre-assembly-subtitle">Personaliza las piezas principales de tu equipo antes de ingresar al simulador 3D</p>
+                </div>
+                <div class="pre-assembly-actions">
+                    <button id="btn-return-from-select" class="hud-menu-btn" title="Volver al Menú Principal">
+                        <span class="hud-menu-icon">◀</span>
+                        <span class="hud-menu-text">MENÚ PRINCIPAL</span>
+                    </button>
+                    <button id="select-modal-close-btn" class="modal-close hud-close" title="Cerrar ventana">&times;</button>
+                </div>
+            </div>
+
+            <!-- Selector de Componentes: Sistema de Barras Horizontales con Buscador en Vivo (Tech Accordion / Search List) -->
+            <div class="tech-selector-viewport" id="tech-selector-viewport">
+                <div class="tech-selector-list" id="tech-selector-list">
+                    <!-- Las 7 barras horizontales con buscador en vivo se renderizan dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Resumen Inferior de Métricas y Botón Continuar -->
+            <div class="pre-assembly-bottom">
+                <div class="pre-assembly-metrics">
+                    <div class="metric-card">
+                        <span class="metric-label">PRECIO TOTAL</span>
+                        <span id="select-total-price" class="metric-val text-cyan">$0 USD</span>
+                    </div>
+                    <div class="metric-divider"></div>
+                    <div class="metric-card">
+                        <span class="metric-label">CONSUMO ESTIMADO</span>
+                        <span id="select-total-tdp" class="metric-val">0W (TDP)</span>
+                    </div>
+                    <div class="metric-divider"></div>
+                    <div class="metric-card metric-compat">
+                        <span class="metric-label">ESTADO DE COMPATIBILIDAD</span>
+                        <div id="select-compat-status" class="compat-badge-ok">
+                            <span class="compat-dot">●</span>
+                            <span id="select-compat-text">VERIFICADA ✔</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pre-assembly-submit-wrap">
+                    <button id="btn-continue-to-assembly" class="action-btn clean-continue-btn continue-btn">
+                        <span class="btn-text">CONTINUAR AL ENSAMBLAJE 3D</span>
+                        <span class="btn-arrow">▶</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensaje de éxito animado -->
+    <div id="success-toast" class="hidden">
+        ¡Componente instalado correctamente! 🟢
+    </div>
+
+    <div id="scene-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+    
+    <script src="main.js"></script>
+</body>
+</html>
